@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.newbee.mall.dao.AdminUserMapper">
+    <resultMap id="BaseResultMap" type="ltd.newbee.mall.entity.AdminUser">
+        <result column="admin_user_id" property="adminUserId"></result>
+        <result column="login_user_name" property="loginUserName"></result>
+        <result column="login_password" property="loginPassword"></result>
+        <result column="nick_name" property="nickName"></result>
+        <result column="locked" property="locked"></result>
+    </resultMap>
+
+    <!--tb_newbee_mall_admin_user 表sql片段-->
+    <sql id="Base_Column_List">
+        admin_user_id,login_user_name,login_password,nick_name,locked
+    </sql>
+
+    <!--resultMap:适合使用返回值是自定义实体类的情况,定义结果映射-->
+    <!--resultType:可以直接返回给出的返回值类型，比如String,int,Integer,Map,List-->
+    <!--parameterType: 属于传递来的参数类型是什么-->
+    <!--登录方法-->
+    <select id="login" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_newbee_mall_admin_user
+        where  login_user_name = #{userName} and login_password = #{password} and locked = 0
+    </select>
+
+    <!--根据用户id 获取用户信息-->
+    <select id="selectByPrimarykey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_newbee_mall_admin_user
+        where admin_user_id = #{adminUserId}
+    </select>
+    <!--根据用户id，修改用户信息-->
+    <update id="updateByPrimaryKeySelective" parameterType="ltd.newbee.mall.entity.AdminUser">
+        update tb_newbee_mall_admin_user
+        <set>
+            <if test="loginUserName != null">
+                login_user_name = #{loginUserName},
+            </if>
+            <if test="loginPassword != null">
+                login_password = #{loginPassword},
+            </if>
+            <if test="nickName != null">
+                nick_name = #{nickName},
+            </if>
+            <if test="locked != null">
+                locked = #{locked}
+            </if>
+        </set>
+        where admin_user_id = #{adminUserId}
+    </update>
+    <!--根据用户id，修改用户密码-->
+    <update id="updateByPrimaryKey" parameterType="ltd.newbee.mall.entity.AdminUser">
+        update tb_newbee_mall_admin_user
+        set login_user_name = #{loginUserName},
+            login_password = #{loginPassword},
+            nick_name = #{nickName},
+            locked = #{locked}
+        where admin_user_id = #{adminUserId}
+    </update>
+    <!--<update id="updateByPrimarykey"></update>-->
+</mapper>

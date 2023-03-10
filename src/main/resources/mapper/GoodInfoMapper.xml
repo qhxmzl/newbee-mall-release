@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.newbee.mall.dao.GoodInfoMapper">
+    <resultMap id="BaseResultMap" type="ltd.newbee.mall.entity.GoodInfo">
+        <id column="goods_id" property="goodsId"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="goods_intro" property="goodsIntro"/>
+        <result column="goods_category_id" property="goodsCategoryId"/>
+        <result column="goods_cover_img" property="goodsCoverImg"/>
+        <result column="goods_carousel" property="goodsCarousel"/>
+        <result column="original_price" property="originalPrice"/>
+        <result column="selling_price" property="sellingPrice"/>
+        <result column="stock_num" property="stockNum"/>
+        <result column="tag" property="tag"/>
+        <result column="goods_sell_status" property="goodsSellStatus"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="ltd.newbee.mall.entity.GoodInfo">
+        <result column="goods_detail_content" property="goodsDetailContent"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        goods_id,goods_name,goods_intro,goods_category_id,goods_cover_img,goods_carousel,original_price,selling_price,stock_num,tag,goods_sell_status,
+            create_time,create_user,update_time,update_user
+    </sql>
+    <sql id="Blob_Column_List">
+        goods_detail_content
+    </sql>
+
+    <!--resultMap:适合使用返回值是自定义实体类的情况,定义结果映射-->
+    <!--resultType:可以直接返回给出的返回值类型，比如String,int,Integer,Map,List-->
+    <!--parameterType: 属于传递来的参数类型是什么-->
+    <!--分页列表数据-->
+    <select id="findGoodInfoList" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from tb_newbee_mall_goods_info
+        order by goods_id desc
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--查询总记录数-->
+    <select id="getTotalGoodInfo" resultType="java.lang.Integer">
+        select count(*)
+        from tb_newbee_mall_goods_info
+    </select>
+
+    <!--根据等级和分类名称查询一条分类数据-->
+    <select id="selectByGoodsName" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from tb_newbee_mall_goods_info
+        where goods_name = #{goodsName}
+    </select>
+
+    <!--新增-->
+    <insert id="insertSelective" parameterType="ltd.newbee.mall.entity.GoodInfo">
+        insert into tb_newbee_mall_goods_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null">
+                goods_id,
+            </if>
+            <if test="goodsName != null">
+                goods_name,
+            </if>
+            <if test="goodsIntro != null">
+                goods_intro,
+            </if>
+            <if test="goodsCategoryId != null">
+                goods_category_id,
+            </if>
+            <if test="goodsCoverImg != null">
+                goods_cover_img,
+            </if>
+            <if test="goodsCarousel != null">
+                goods_carousel,
+            </if>
+            <if test="originalPrice != null">
+                original_price,
+            </if>
+            <if test="sellingPrice != null">
+                selling_price,
+            </if>
+            <if test="stockNum != null">
+                stock_num,
+            </if>
+            <if test="tag != null">
+                tag,
+            </if>
+            <if test="goodsSellStatus != null">
+                goods_sell_status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+            <if test="goodsDetailContent != null">
+                goods_detail_content,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null">
+                #{goodsId},
+            </if>
+            <if test="goodsName != null">
+                #{goodsName},
+            </if>
+            <if test="goodsIntro != null">
+                #{goodsIntro},
+            </if>
+            <if test="goodsCategoryId != null">
+                #{goodsCategoryId},
+            </if>
+            <if test="goodsCoverImg != null">
+                #{goodsCoverImg},
+            </if>
+            <if test="goodsCarousel != null">
+                #{goodsCarousel},
+            </if>
+            <if test="originalPrice != null">
+                #{originalPrice},
+            </if>
+            <if test="sellingPrice != null">
+                #{sellingPrice},
+            </if>
+            <if test="stockNum != null">
+                #{stockNum},
+            </if>
+            <if test="tag != null">
+                #{tag},
+            </if>
+            <if test="goodsSellStatus != null">
+                #{goodsSellStatus},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="createUser != null">
+                #{createUser},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser},
+            </if>
+            <if test="goodsDetailContent != null">
+                #{goodsDetailContent},
+            </if>
+        </trim>
+    </insert>
+
+    <!--获取商品详情-->
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="Long">
+        select
+           <include refid="Base_Column_List"/>
+           ,
+           <include refid="Blob_Column_List"/>
+        from tb_newbee_mall_goods_info
+        where goods_id = #{goodsId}
+    </select>
+    <!--//根据购物车中商品的id数组，获取商品表中的数据列表-->
+    <select id="selectByPrimaryKeys" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from tb_newbee_mall_goods_info
+        where goods_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        order by field(goods_id,
+                    <foreach item="id" collection="list" separator=",">
+                        #{id}
+                    </foreach>)
+    </select>
+
+    <!--前台模糊商品搜索-->
+    <select id="findNewBeeMallGoodsListBySearch" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from tb_newbee_mall_goods_info
+        <where>
+            <if test="keyword != null and keyword != ''">
+                 and (goods_name like CONCAT('%',#{keyword},'%') or goods_intro like CONCAT('%',#{keyword},'%'))
+             </if>
+            <if test="goodsCategoryId != null and goodsCategoryId != ''" >
+                and goods_category_id = #{goodsCategoryId}
+            </if>
+            <if test="goodsSellStatus != null">
+                and goods_sell_status = #{goodsSellStatus}
+            </if>
+        </where>
+        <if test="orderBy != null and orderBy != ''">
+            <choose>
+                <when test="orderBy == 'new'">
+#                     按照发布时间倒序排列
+                    order by goods_id desc
+                </when>
+                <when test="orderBy == 'price'">
+#                     按照售价从小到大排列
+                    order by selling_price asc
+                </when>
+                <otherwise>
+#                     默认按照库存数量从小到大排列
+                    order by stock_num desc
+                </otherwise>
+            </choose>
+        </if>
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--前台模糊商品总记录数-->
+    <select id="getTotalNewBeeMallGoodsBySearch" resultType="java.lang.Integer">
+        select count(*)
+        from tb_newbee_mall_goods_info
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and (goods_name like CONCAT('%',#{keyword},'%') or goods_intro like CONCAT('%',#{keyword},'%'))
+            </if>
+            <if test="goodsCategoryId != null and goodsCategoryId != ''" >
+                and goods_category_id = #{goodsCategoryId}
+            </if>
+            <if test="goodsSellStatus != null">
+                and goods_sell_status = #{goodsSellStatus}
+            </if>
+        </where>
+    </select>
+
+    <!--后台商品管理，修改商品信息-->
+    <update id="updateByPrimaryKeySelective" parameterType="ltd.newbee.mall.entity.GoodInfo">
+        update tb_newbee_mall_goods_info
+        <set>
+            <if test="goodsName != null">
+                goods_name = #{goodsName},
+            </if>
+            <if test="goodsIntro != null">
+                goods_intro = #{goodsIntro},
+            </if>
+            <if test="goodsCategoryId != null">
+                goods_category_id = #{goodsCategoryId},
+            </if>
+            <if test="goodsCoverImg != null">
+                goods_cover_img = #{goodsCoverImg},
+            </if>
+            <if test="goodsCarousel != null">
+                goods_carousel = #{goodsCarousel},
+            </if>
+            <if test="originalPrice != null">
+                original_price = #{originalPrice},
+            </if>
+            <if test="sellingPrice != null">
+                selling_price = #{sellingPrice},
+            </if>
+            <if test="stockNum != null">
+                stock_num = #{stockNum},
+            </if>
+            <if test="tag != null">
+                tag = #{tag},
+            </if>
+            <if test="goodsSellStatus != null">
+                goods_sell_status = #{goodsSellStatus},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="goodsDetailContent != null">
+                goods_detail_content = #{goodsDetailContent},
+            </if>
+        </set>
+        where goods_id = #{goodsId}
+    </update>
+
+    <!--后台商品管理，批量修改销售状态(上架下架)-->
+    <update id="batchUpdateSellStatus">
+        update tb_newbee_mall_goods_info
+        set goods_sell_status = #{sellStatus}, update_time=now()
+        where goods_id in
+        <foreach item="id" collection="orderIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!--库存修改-->
+    <update id="updateStockNum">
+        <foreach collection="stockNumDTOS" item="stockNumDTO">
+            update tb_newbee_mall_goods_info
+            set stock_num = stock_num - #{stockNumDTO.goodsCount}
+            where goods_id = #{stockNumDTO.goodsId} and stock_num >= #{stockNumDTO.goodsCount} and goods_sell_status = 0;
+        </foreach>
+    </update>
+</mapper>

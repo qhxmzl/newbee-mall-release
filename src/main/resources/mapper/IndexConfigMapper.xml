@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.newbee.mall.dao.IndexConfigMapper">
+<resultMap id="BaseResultMap" type="ltd.newbee.mall.entity.IndexConfig">
+    <id column="config_id" property="configId"/>
+    <result column="config_name" property="configName"/>
+    <result column="config_type" property="configType"/>
+    <result column="goods_id" property="goodsId"/>
+    <result column="redirect_url" property="redirectUrl"/>
+    <result column="config_rank" property="configRank"/>
+    <result column="is_deleted" property="isDeleted"/>
+    <result column="create_time" property="createTime"/>
+    <result column="create_user" property="createUser"/>
+    <result column="update_time" property="updateTime"/>
+    <result column="update_user" property="updateUser"/>
+</resultMap>
+
+    <sql id="Base_Column_List">
+        config_id,config_name,config_type,goods_id,redirect_url,config_rank,is_deleted,create_time,create_user,update_time,update_user
+    </sql>
+
+    <!--resultMap:适合使用返回值是自定义实体类的情况,定义结果映射-->
+    <!--resultType:可以直接返回给出的返回值类型，比如String,int,Integer,Map,List-->
+    <!--parameterType: 属于传递来的参数类型是什么-->
+    <select id="findIndexConfigList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_newbee_mall_index_config
+        <where>
+            <if test="configType!=null and configType!=''">
+                and config_type = #{configType}
+            </if>
+            and is_deleted = 0
+        </where>
+        order by config_rank desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <select id="getTotalIndexConfig" resultType="java.lang.Integer">
+        select count(*)
+        from tb_newbee_mall_index_config
+        <where>
+            <if test="configType!=null and configType!=''">
+                and config_type = #{configType}
+            </if>
+            and is_deleted = 0
+        </where>
+    </select>
+
+    <!--后台商品配置：新增-->
+    <insert id="insertSelective" parameterType="ltd.newbee.mall.entity.IndexConfig">
+        insert into tb_newbee_mall_index_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="configId != null">
+                config_id,
+            </if>
+            <if test="configName != null">
+                config_name,
+            </if>
+            <if test="configType != null">
+                config_type,
+            </if>
+            <if test="goodsId != null">
+                goods_id,
+            </if>
+            <if test="redirectUrl != null">
+                redirect_url,
+            </if>
+            <if test="configRank != null">
+                config_rank,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+        </trim>
+        <trim prefix="value ("  suffix=")" suffixOverrides=",">
+            <if test="configId != null">
+               #{configId},
+            </if>
+            <if test="configName != null">
+                #{configName},
+            </if>
+            <if test="configType != null">
+                #{configType},
+            </if>
+            <if test="goodsId != null">
+                #{goodsId},
+            </if>
+            <if test="redirectUrl != null">
+                #{redirectUrl},
+            </if>
+            <if test="configRank != null">
+                #{configRank},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="createUser != null">
+                #{createUser},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!--根据id获取此商品配置详情-->
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="ltd.newbee.mall.entity.IndexConfig">
+        select <include refid="Base_Column_List"/>
+        from tb_newbee_mall_index_config
+        where config_id = #{configId} and is_deleted=0
+    </select>
+    <!--后台商品配置：修改-->
+    <update id="updateByPrimaryKeySelective" parameterType="ltd.newbee.mall.entity.IndexConfig">
+        update tb_newbee_mall_index_config
+        <set>
+            <if test="configName != null">
+                config_name =  #{configName},
+            </if>
+            <if test="configType != null">
+                config_type =  #{configType},
+            </if>
+            <if test="goodsId != null">
+                goods_id =  #{goodsId},
+            </if>
+            <if test="redirectUrl != null">
+                redirect_url  =  #{redirectUrl},
+            </if>
+            <if test="configRank != null">
+                config_rank  =  #{configRank},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted =  #{isDeleted},
+            </if>
+            <if test="createTime != null">
+                create_time =  #{createTime},
+            </if>
+            <if test="createUser != null">
+                create_user =  #{createUser},
+            </if>
+            <if test="updateTime != null">
+                update_time =  #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+        </set>
+        where config_id = #{configId}
+    </update>
+
+    <!--通过类型查询商品-->
+    <select id="findIndexConfigsByTypeAndNum" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from tb_newbee_mall_index_config
+        where config_type = #{configType} and is_deleted = 0
+        order by config_rank desc
+        limit #{number}
+    </select>
+
+    <!--后台商品配置：批量删除-->
+    <update id="deleteBatch">
+        update tb_newbee_mall_index_config
+        set is_deleted = 1,update_time = now()
+        where config_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+
+</mapper>

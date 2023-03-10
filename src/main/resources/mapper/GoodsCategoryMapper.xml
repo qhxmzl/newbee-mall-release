@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.newbee.mall.dao.GoodsCategoryMapper">
+    <resultMap id="BaseResultMap" type="ltd.newbee.mall.entity.GoodsCategory">
+        <id column="category_id" property="categoryId"/>
+        <result column="category_level" property="categoryLevel"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="category_name" property="categoryName"/>
+        <result column="category_rank" property="categoryRank"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_user" property="updateUser"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        category_id,category_level,parent_id,category_name,category_rank,
+            is_deleted,create_time,create_user,update_time,update_user
+    </sql>
+
+    <!--resultMap:适合使用返回值是自定义实体类的情况,定义结果映射-->
+    <!--resultType:可以直接返回给出的返回值类型，比如String,int,Integer,Map,List-->
+    <!--parameterType: 属于传递来的参数类型是什么，可以不添加-->
+    <!--分页列表数据-->
+    <select id="findGoodsCategoryList" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from tb_newbee_mall_goods_category
+        <where>
+            <if test="categoryLevel != null and categoryLevel != ''">
+                and category_level = #{categoryLevel}
+            </if>
+            <if test="parentId != null and parentId != ''">
+                and parent_id = #{parentId}
+            </if>
+            and is_deleted = 0
+        </where>
+        order by category_rank desc
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--查询总记录数-->
+    <select id="getTotalGoodsCategory" resultType="java.lang.Integer">
+        select count(*)
+        from tb_newbee_mall_goods_category
+        <where>
+            <if test="categoryLevel != null and categoryLevel != ''">
+                and category_level = #{categoryLevel}
+            </if>
+            <if test="parentId != null and parentId != ''">
+                and parent_id = #{parentId}
+            </if>
+            and is_deleted = 0
+        </where>
+    </select>
+
+    <!--后台"新增"商品分类：根据分类等级和分类名称，查询是否已经有该分类->根据等级和分类名称查询一条分类数据-->
+    <select id="selectByCategoryLevelAndCategoryName" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from tb_newbee_mall_goods_category
+        where category_level = #{categoryLevel} and category_name = #{categoryName} and is_deleted = 0 limit 1;
+    </select>
+    <!--后台"新增"一条商品分类-->
+    <insert id="insertSelective" parameterType="ltd.newbee.mall.entity.GoodsCategory">
+        insert into tb_newbee_mall_goods_category
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="categoryId != null">
+                category_id,
+            </if>
+            <if test="categoryLevel != null">
+                category_level,
+            </if>
+            <if test="parentId != null">
+                parent_id,
+            </if>
+            <if test="categoryName != null">
+                category_name,
+            </if>
+            <if test="categoryRank != null">
+                category_rank,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+        </trim>
+        <trim prefix="value(" suffix=")" suffixOverrides=",">
+            <if test="categoryId != null">
+                #{categoryId},
+            </if>
+            <if test="categoryLevel != null">
+                #{categoryLevel},
+            </if>
+            <if test="parentId != null">
+                #{parentId},
+            </if>
+            <if test="categoryName != null">
+                #{categoryName},
+            </if>
+            <if test="categoryRank != null">
+                #{categoryRank},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="createUser != null">
+                #{createUser},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser},
+            </if>
+        </trim>
+    </insert>
+
+    <!--主键获取该分类详情-->
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="ltd.newbee.mall.entity.GoodsCategory">
+        select <include refid="Base_Column_List"/>
+        from tb_newbee_mall_goods_category
+        where category_id = #{categoryId} and is_deleted = 0
+    </select>
+
+    <!--后台"修改"商品分类-->
+    <update id="updateByPrimaryKeySelective" parameterType="ltd.newbee.mall.entity.GoodsCategory">
+        update tb_newbee_mall_goods_category
+        <set>
+            <if test="categoryLevel != null">
+                category_level = #{categoryLevel},
+            </if>
+            <if test="parentId != null">
+                parent_id = #{parentId},
+            </if>
+            <if test="categoryName != null">
+                category_name = #{categoryName},
+            </if>
+            <if test="categoryRank != null">
+                category_rank = #{categoryRank},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+        </set>
+            where category_id = #{categoryId}
+    </update>
+
+    <!--删除商品分类-->
+    <delete id="deleteBatch">
+        update tb_newbee_mall_goods_category
+        set is_deleted = 1,update_time = now()
+        where category_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--根据parentId和level获取分类列表-->
+    <select id="selectByLevelAndParentIdsAndNumber" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_newbee_mall_goods_category
+        where parent_id in
+        <foreach item="parentId" collection="parentIds" open="(" separator="," close=")">
+            #{parentId}
+        </foreach>
+        and category_level = #{categoryLevel}
+        and is_deleted = 0
+        order by category_rank desc
+        <if test="number>0">
+            limit #{number}
+        </if>
+    </select>
+</mapper>

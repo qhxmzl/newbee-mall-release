@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.newbee.mall.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="ltd.newbee.mall.entity.User">
+        <id column="user_id" property="userId"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="login_name" property="loginName"/>
+        <result column="password_md5" property="passwordMd5"/>
+        <result column="introduce_sign" property="introduceSign"/>
+        <result column="address" property="address"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="locked_flag" property="lockedFlag"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        user_id,nick_name,login_name,password_md5,introduce_sign,address,is_deleted,locked_flag,create_time
+    </sql>
+
+    <!--前台注册：添加用户-->
+    <insert id="insertSelective">
+        insert into tb_newbee_mall_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="nickName != null">
+                nick_name,
+            </if>
+            <if test="loginName != null">
+                login_name,
+            </if>
+            <if test="passwordMd5 != null">
+                password_md5,
+            </if>
+            <if test="introduceSign != null">
+                introduce_sign,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted,
+            </if>
+            <if test="lockedFlag != null">
+                locked_flag,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId},
+            </if>
+            <if test="nickName != null">
+                #{nickName},
+            </if>
+            <if test="loginName != null">
+                #{loginName},
+            </if>
+            <if test="passwordMd5 != null">
+                #{passwordMd5},
+            </if>
+            <if test="introduceSign != null">
+                #{introduceSign},
+            </if>
+            <if test="address != null">
+                #{address},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted},
+            </if>
+            <if test="lockedFlag != null">
+                #{lockedFlag},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+        </trim>
+    </insert>
+
+    <!--resultMap:适合使用返回值是自定义实体类的情况,定义结果映射-->
+    <!--resultType:可以直接返回给出的返回值类型，比如String,int,Integer,Map,List-->
+    <!--parameterType: 属于传递来的参数类型是什么-->
+    <!--分页列表-->
+    <select id="findUserList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_newbee_mall_user
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <!--总记录数-->
+    <select id="getTotalUser" resultType="java.lang.Integer">
+        select count(*)
+        from tb_newbee_mall_user
+    </select>
+
+    <!--前台登录:根据用户名和密码查询用户是否存在-->
+    <select id="selectByLoginNameAndPasswd" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from tb_newbee_mall_user
+        where login_name = #{loginName} and password_md5 = #{password} and is_deleted = 0;
+    </select>
+
+    <!--根据用户名判断此用户名是否已被注册-->
+    <select id="selectByLoginName" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from tb_newbee_mall_user
+        where login_name = #{loginName} and is_deleted = 0
+    </select>
+
+    <!--前台个人中心修改用户信息：根据id查询用户信息-->
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from tb_newbee_mall_user
+        where user_id = #{userId} and is_deleted = 0
+    </select>
+
+    <!--解禁用户-->
+    <update id="lockUserBatch">
+        update tb_newbee_mall_user
+        set locked_flag = #{lockStatus}
+        where user_id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!--前台个人中心修改用户信息-->
+    <update id="updateByPrimaryKeySelective">
+        update tb_newbee_mall_user
+        <set>
+            <if test="nickName != null">
+                nick_name = #{nickName},
+            </if>
+            <if test="loginName != null">
+                login_name = #{loginName},
+            </if>
+            <if test="passwordMd5 != null">
+                password_md5 = #{passwordMd5},
+            </if>
+            <if test="introduceSign != null">
+                introduce_sign = #{introduceSign},
+            </if>
+            <if test="address != null">
+                address = #{address},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted},
+            </if>
+            <if test="lockedFlag != null">
+                locked_flag = #{lockedFlag},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+</mapper>
