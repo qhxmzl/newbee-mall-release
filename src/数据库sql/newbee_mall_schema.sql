@@ -12,6 +12,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- link https://github.com/newbee-ltd
 -- Table structure for tb_newbee_mall_admin_user
 -- ----------------------------
+create database newbee_mall_db;
 DROP TABLE IF EXISTS `tb_newbee_mall_admin_user`;
 CREATE TABLE `tb_newbee_mall_admin_user`  (
   `admin_user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '管理员id',

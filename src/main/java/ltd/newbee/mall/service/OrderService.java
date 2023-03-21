@@ -43,7 +43,7 @@ public interface OrderService {
     // 获取订单详情
     NewBeeMallOrderDetailVO getOrderDetailByOrderNo(String orderNo, Long userId);
 
-    //保存订单
+    //保存订单并返回订单号
     String saveOrder(NewBeeMallUserVO user, List<NewBeeMallShoppingCartItemVO> myShoppingCartItems);
 
     // 手动取消订单

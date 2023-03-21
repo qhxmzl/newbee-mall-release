@@ -267,7 +267,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    // 保存订单
+    // 保存订单并返回订单号
     @Override
     @Transactional
     public String saveOrder(NewBeeMallUserVO user, List<NewBeeMallShoppingCartItemVO> myShoppingCartItems) {
