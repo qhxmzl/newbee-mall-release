@@ -17,15 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 后台系统身份验证拦截器
- *
- * @author 13
- * @qq交流群 796794009
- * @email 2449207463@qq.com
- * @link https://github.com/newbee-ltd
  */
 @Component
 public class AdminLoginInterceptor implements HandlerInterceptor {
 
+    /***
+     * preHandle在请求处理之前进行调用(Controller方法调用之前)
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
         // System.out.println("进入拦截器");
@@ -42,12 +40,19 @@ public class AdminLoginInterceptor implements HandlerInterceptor {
         }
     }
 
+    /***
+     * postHandle请求处理之后进行调用，但是在视图被渲染之前（Controller方法调用之后）
+     */
     @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
+        System.out.println("执行了拦截器的postHandle方法");
     }
 
+    /***
+     * afterCompletion整个请求结束之后被调用，也就是在DispatchServlet渲染了对应的视图之后执行（主要用于进行资源清理工作）
+     */
     @Override
     public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) throws Exception {
-
+        System.out.println("执行了拦截器的afterCompletion方法");
     }
 }

@@ -12,6 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 //后台登录注册/修改
+/**
+ * 只需一次登录，如果登录过，下一次再访问的时候就无需再次进行登录拦截，可以直接访问网站里面的内容了。
+ *
+ * 在正确登录之后，就将user保存到session中，再次访问页面的时候，
+ * 登录拦截器就可以找到这个user对象，就不需要再次拦截到登录界面了.
+ */
 @Controller
 @RequestMapping("/admin")
 public class AdminController {

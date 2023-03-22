@@ -18,6 +18,12 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * 只需一次登录，如果登录过，下一次再访问的时候就无需再次进行登录拦截，可以直接访问网站里面的内容了。
+ *
+ * 在正确登录之后，就将user保存到session中，再次访问页面的时候，
+ * 登录拦截器就可以找到这个user对象，就不需要再次拦截到登录界面了.
+ */
 @Configuration
 public class NeeBeeMallWebMvcConfigurer implements WebMvcConfigurer {
 
@@ -31,23 +37,23 @@ public class NeeBeeMallWebMvcConfigurer implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         // 添加一个拦截器，拦截以/admin为前缀的url路径（后台登陆拦截）
         registry.addInterceptor(adminLoginInterceptor)
-                .addPathPatterns("/admin/**")
-                .excludePathPatterns("/admin/login")
+                .addPathPatterns("/admin/**")               //添加拦截路径
+                .excludePathPatterns("/admin/login")        //添加不拦截路径
                 .excludePathPatterns("/admin/dist/**")
                 .excludePathPatterns("/admin/plugins/**");
         // 购物车中的数量统一处理
         registry.addInterceptor(newBeeMallCartNumberInterceptor)
-                .excludePathPatterns("/admin/**")
+                .excludePathPatterns("/admin/**")        //添加不拦截路径
                 .excludePathPatterns("/register")
                 .excludePathPatterns("/login")
                 .excludePathPatterns("/logout");
         // 商城页面登陆拦截
         registry.addInterceptor(newBeeMallLoginInterceptor)
-                .excludePathPatterns("/admin/**")
+                .excludePathPatterns("/admin/**")        //添加不拦截路径
                 .excludePathPatterns("/register")
                 .excludePathPatterns("/login")
                 .excludePathPatterns("/logout")
-                .addPathPatterns("/goods/detail/**")
+                .addPathPatterns("/goods/detail/**")              //添加拦截路径
                 .addPathPatterns("/shop-cart")
                 .addPathPatterns("/shop-cart/**")
                 .addPathPatterns("/saveOrder")
@@ -60,6 +66,7 @@ public class NeeBeeMallWebMvcConfigurer implements WebMvcConfigurer {
     }
 
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        //添加拦截路径
         registry.addResourceHandler("/upload/**").addResourceLocations("file:" + Constants.FILE_UPLOAD_DIC);
         registry.addResourceHandler("/goods-img/**").addResourceLocations("file:" + Constants.FILE_UPLOAD_DIC);
     }
